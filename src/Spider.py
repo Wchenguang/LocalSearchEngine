@@ -21,6 +21,10 @@ my_headers = {
 
 class Spider:
 
+    stopUrls = [
+        "http://blog.csdn.net/error/404.html"
+    ]
+
     #去除无效url的正则表达式
     CLEANURL0 = re.compile(ur'.*html')
     CLEANURL1 = re.compile(ur'')
@@ -87,17 +91,17 @@ class Spider:
             count = 1
             for url in self.linkStack:
                 try:
+                    if( url in self.startUrl):
+                        continue
                     if (url in self.visitedUrl):
                         continue
                     else:
                         page = requests.get(url, timeout=self.timeOut, headers=my_headers)
 #-------------------------
-                        if(page.status_code[0] == '2'):
+                        # 只保留成功访问的网页
+                        if((page.status_code/100)== 2):
                             print 'ok'
-                            aa = raw_input()
-
-                        #只保留成功访问的网页
-                        if(page.status_code[0] != '2'):
+                        else:
                             continue
 #-------------------------
                         page.encoding = 'utf-8'
@@ -140,4 +144,5 @@ if(c.match("http://tieba.baidu.com/f?ie=utf8&kw=%E8%B4%B4%E5%90%A7%E6%9B%9D%E5%8
     print "ok"
 '''
 
+#page = requests.get("http://blog.csdn.net/dev/csdn/article/details/78275444", timeout=3, headers=my_headers)
 

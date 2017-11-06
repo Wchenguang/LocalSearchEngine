@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>WCG SEARCH</title>
+
+</head>
+
+
+<body onload="init()">
+    <center>
+        <p>
+            <a href="http://blog.csdn.net/mr_w1997/" target="_blank">
+                <rspan>Just Search</rspan>
+            </a>
+        </p>
+
+        <input id="msg" type="textbox" onkeypress="onkey(event)" class="msg" />
+    </center>
+    <p>
+    <center>
+        <input type="submit" onclick="send()" value="搜索" height="10px" class="submit" />
+        
+        <div id="res"></div>
+    </center>
+    
+    
+    
+</body>
+
+<script>
+        var socket;
+    
+        
+        function init() {
+            var host = "ws://127.0.0.1:60002/";
+            try {
+                socket = new WebSocket(host);
+                socket.onopen = function (msg) {
+                    log('Connected');
+                };
+                socket.onmessage = function (msg) {
+                    
+                       log(msg.data);
+                    
+                };
+                socket.onclose = function (msg) {
+                    log("Lose Connection!");
+                };
+            }
+            catch (ex) {
+                log(ex);
+            }
+            $("msg").focus();
+        }
+
+        function send() {
+            var inputBox, words;
+            inputBox = $("msg");
+            words = inputBox.value;
+            
+            if (!words) {
+                alert("Message can not be empty");
+                return;
+            }
+            try {
+                socket.send(words);
+            } catch (ex) {
+                log(ex);
+                alert("发送失败，请重试")
+            }
+        }
+
+        window.onbeforeunload = function () {
+            try {
+                socket.send('quit');
+                socket.close();
+                socket = null;
+            }
+            catch (ex) {
+                log(ex);
+            }
+        };
+
+
+        function $(id) {
+            return document.getElementById(id);
+        }
+        function log(msg) {
+            $("res").innerHTML = "<br>" + msg;
+        }
+        function onkey(event) {
+            if (event.keyCode == 13) {
+                send();
+            }
+        }
+    </script>
+    
+    <style type="text/css">
+        rspan {
+            color : blue
+        }
+        
+        span {
+            color : red
+        }
+        
+        .mbody{
+            background-image:url(http://img1.imgtn.bdimg.com/it/u=4064924460,2025850025&fm=27&gp=0.jpg);
+            background-position:center;           
+            background-repeat:repeat-y；
+        }
+        
+        .submit{
+            width: 104px;
+            height: 20px;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 40px;        
+        }
+        
+        .msg{
+            width: 427px;
+            height: 22px;
+            font-size: 15px;
+            
+        }
+    </style>
+
+</html>
+

@@ -108,28 +108,16 @@ class HtmlIndexer:
 
         return targetMap
 
-
-
-    def __getEngSegList(self, sourceStr):
-        tempList = []
-        targetMap = {}
-        #英文分词
-        segList = jieba.cut(sourceStr)
-        for word in segList:
-            if (word not in self.engStopWordsList):
-                tempList.append(word)
-        tempC = collections.Counter(tempList);
-
-        for word, times in tempC.most_common(self.KEYINTEXTNUM):
-            targetMap[word] = times * self.WEIGHT_WORD
-
-        return targetMap
-    #获取
+    #获取字符串中的关键字
     def __getKeySeg(self, sourceStr, num, weight):
-        keywords = jieba.analyse.extract_tags(sourceStr, topK=num, withWeight=False, allowPOS=('ns', 'n', 'v'))
+        chiKeywords = jieba.analyse.extract_tags(Analyzer.getAllChiInStr(sourceStr), topK=num, withWeight=False, allowPOS=('ns', 'n', 'v'))
+        #英文全保留
+        engKeyword = Analyzer.getEngSegList(Analyzer.getAllEngInStr(sourceStr), self.engStopWordsList)
         targetMap = {}
-        for word in keywords:
-            targetMap[word] = weight;
+        for word in chiKeywords:
+            targetMap[word] = weight
+        for word in engKeyword:
+            targetMap[word] = weight
         return targetMap
 
     #获取title内容接口
@@ -165,16 +153,6 @@ class HtmlIndexer:
                 targetStr = tempStr
         return targetStr
 
-    #获取网页所有中文内容
-    def __getAllChiInHtml(self, pageContent):
-        words = re.findall(ur"[\u4e00-\u9fa5]+", pageContent)
-        str = ""
-        if(words != None):
-            for word in words:
-                str += word
-                str += " "
-        return str
-
     #为html文件分词
     def __getHtmlIndexs(self, htmlFile):
         pageContent = htmlFile.read()
@@ -185,7 +163,7 @@ class HtmlIndexer:
         targetMap = self.mergeIntMap(targetMap, self.__getKeySeg(self.__getHtmlDiscription(pagesoup), self.KEYINDISCRIPTION, self.WEIGHT_DISCREPTION)
                                      )
         #获取所用中文文本 提取关键字并按照词频赋予权值
-        allChi = self.__getAllChiInHtml(pageContent)
+        allChi = Analyzer.getAllChiInStr(pageContent)
         targetMap = self.mergeIntMap(targetMap,self.__getChiSegMap(allChi, self.KEYINTEXTNUM, self.WEIGHT_WORD))
 
         return targetMap
@@ -232,3 +210,4 @@ h.startIndex()
 '''
 #h = HtmlIndexer()
 #h.startIndex()
+
