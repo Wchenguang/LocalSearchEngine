@@ -25,7 +25,7 @@ class Engine:
     targetUrl = "http://www.csdn.net"
 
     #目标深度
-    targetDepth = 3
+    targetDepth = 2
 
     #爬虫
     spider = Spider.Spider(targetUrl, targetDepth)
@@ -43,14 +43,16 @@ class Engine:
 
     def __init__(self):
         #抓取
-        #for i in range(1, self.targetDepth + 1):
-            #self.spider.visitCurrent()
-            #print "depth: ", i, '/', self.spider.maxDepth, " done"
+        print "fetching......"
+        for i in range(1, self.targetDepth + 1):
+            self.spider.visitCurrent()
+            print "depth: ", i, '/', self.spider.maxDepth, " done"
         #建立索引文件
-        #print "indexing......"
-        #self.htmlIndexer.getHtml()
-        #self.htmlIndexer.startIndex()
+        print "indexing......"
+        self.htmlIndexer.getHtml()
+        self.htmlIndexer.startIndex()
         #获取倒排索引表
+        print "mapping"
         self.targetMap = self.mapBuilder.getMap()
 
     def __getUrlAndWeight(self, word):
