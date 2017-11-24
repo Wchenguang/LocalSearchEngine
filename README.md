@@ -1,7 +1,7 @@
-#单机搜索引擎模型
+# 单机搜索引擎模型
 ====
 
-##使用示例
+## 使用示例
 * 输入目的网址<br/>
 <pre>
 	/* 修改/src/Engine.py 中25行的目的url 默认是csdn */ <br/>
@@ -13,7 +13,7 @@
 * 打开 /search.htm，输入关键词即可搜索 <br/>  <br/>
 ![use example](https://github.com/Wchenguang/LocalSearchEngine/blob/master/使用样例.png) <br/>
 
-##实现简介
+## 实现简介
 * /src/Spider.py
 	* 网络爬虫
 	* 利用BFS(深度优先搜索)，可以设置搜索根url，也可以设置搜索的深度
