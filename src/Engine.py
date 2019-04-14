@@ -37,9 +37,9 @@ class Engine:
     mapBuilder = MapBuilder.MapBuilder()
 
     #匹配摘要前后的文字正则
-    #briefPat = ur"[\u4e00-\u9fa5]{"
+    #briefPat = u"[\u4e00-\u9fa5]{"
     #maxBrief = 40
-    briefPat = ur"[\u4e00-\u9fa5]{0,40}"
+    briefPat = u"[\u4e00-\u9fa5]{0,40}"
 
     def __init__(self):
         #抓取
@@ -86,7 +86,7 @@ class Engine:
                 '''length = self.maxBrief
                 brief = ""
                 while(length > 0):
-                    brief = re.search(self.briefPat + str(length) + ur'}' + targetWord + self.briefPat + str(length) + ur'}', content)
+                    brief = re.search(self.briefPat + str(length) + u'}' + targetWord + self.briefPat + str(length) + ur'}', content)
                     if (brief):
                         break
                     length -= 1'''
@@ -112,7 +112,6 @@ class Engine:
             targetWord = targetWord[0:self.MAXKEYWORDLEN]
 
         result = []
-        
         #将搜索词作为关键字查找
         #targetWord = targetWord.decode('utf-8')
         #tempResult = self.__getUrlAndWeight(targetWord)
@@ -140,7 +139,8 @@ class Engine:
                 mergedRes.remove(res)
 
         result = []'''
-
+        for i in mergedRes:
+            i[0] = 'http://' + i[0]
         return mergedRes
 
 

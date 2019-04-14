@@ -21,6 +21,8 @@ my_headers = {
 
 class Spider:
 
+    startFlag = True
+
     stopUrls = [
         "http://blog.csdn.net/error/404.html"
     ]
@@ -77,10 +79,12 @@ class Spider:
 
     #保存html文件
     def __saveHtml(self, url, pageText):
-        filename = self.path + url.replace('/','_') + self.HTMLEXT
+        filename = self.path + url[7:len(url)+1].replace('/','_') + self.HTMLEXT
+        print('html file', filename, 'saving')
         file = codecs.open(filename, "w", "UTF-8")
         file.write(pageText)
         file.close()
+        print 'html file', filename, 'saved'
 
     #访问当前栈内所有链接 并生成新的栈
     def visitCurrent(self):
@@ -91,7 +95,7 @@ class Spider:
             count = 1
             for url in self.linkStack:
                 try:
-                    if( url in self.startUrl):
+                    if( url in self.startUrl and len(self.linkStack) != 1):
                         continue
                     if (url in self.visitedUrl):
                         continue
@@ -100,7 +104,7 @@ class Spider:
 #-------------------------
                         # 只保留成功访问的网页
                         if((page.status_code/100)== 2):
-                            print 'ok'
+                            print 'get', url, 'ok'
                         else:
                             continue
 #-------------------------
@@ -110,7 +114,8 @@ class Spider:
                         self.__saveHtml(url, page.text)
                         self.visitedUrl.add(url)
                         # 输出完成进度
-                except:
+                except Exception, e:
+                    print(str(e))
                     print 'wrong: ',url,' ',
                 finally:
                     print count, "/", len(self.linkStack)
